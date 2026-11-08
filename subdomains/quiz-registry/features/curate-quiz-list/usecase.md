@@ -5,7 +5,7 @@ Actor: a user working on their own list. Aggregate: [`QuizList`](../../models/qu
 ## Create a list
 
 - Input: title, optional description, visibility, tags, and optionally the quizzes to start with.
-- Steps: `QuizList::new(caller, title, description, visibility, tags)` creates the list without
+- Steps: `QuizList::new(caller, title, description, visibility, tags, now)` creates the list without
   quizzes. Each initial quiz then goes through "Add a quiz" below, in order.
   `QuizListRepository::add`.
 - No server-side defaults. Visibility is required input.
@@ -14,13 +14,13 @@ Actor: a user working on their own list. Aggregate: [`QuizList`](../../models/qu
 
 ## Change title, description, visibility or tags
 
-- Steps: `find_by_id`, `is_editable_by`, the matching `change_*`, `update`.
+- Steps: `find_by_id`, `is_editable_by`, the matching `change_*(.., now)`, `update`.
 - These fields are not versioned. The entries version is untouched.
 
 ## Add a quiz
 
 - Steps: `QuizListRepository::find_by_id`, `is_editable_by`, `QuizRepository::find_by_id(quiz_id)`,
-  `QuizList::add_quiz(&quiz, position)`, `update`.
+  `QuizList::add_quiz(&quiz, position, now)`, `update`.
 - `add_quiz` enforces the rule: the quiz must be published (a draft has nothing to play) and must
   allow inclusion in a list owned by this list's owner (`Quiz::is_includable_by`). The application
   only loads the quiz and passes it in.
@@ -30,7 +30,7 @@ Actor: a user working on their own list. Aggregate: [`QuizList`](../../models/qu
 
 ## Remove a quiz, reorder
 
-- Steps: `find_by_id`, `is_editable_by`, `remove_quiz` or `reorder`, `update`.
+- Steps: `find_by_id`, `is_editable_by`, `remove_quiz(.., now)` or `reorder(.., now)`, `update`.
 - Rejected when: the quiz is not in the list, or the order is not a permutation of the current
   quizzes.
 - Outcome: a new entries version.

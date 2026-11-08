@@ -18,6 +18,12 @@ and a state.
 - Only the owner may edit: work on the draft, publish, change the inclusion policy, delete.
 - Two quizzes are equal when they have the same identifier.
 
+## Time
+
+`created_at` is set once by `new`. `updated_at` is set by `new` and by every operation that changes
+the quiz. Both come from the caller as the `now` argument: the domain never reads the clock, and a
+use case stamps one time on everything it touches. A rejected operation leaves `updated_at` alone.
+
 ## Operations
 
 - `edit_draft`: replaces the draft, or starts one.

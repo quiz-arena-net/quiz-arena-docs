@@ -14,6 +14,11 @@ Aggregate root. An ordered selection of quizzes: an identifier, an owner, a
 - Only the owner may edit.
 - Two lists are equal when they have the same identifier.
 
+## Time
+
+`created_at` and `updated_at` as on [`Quiz`](quiz.md): set from the `now` argument, updated by every
+successful change.
+
 ## Operations
 
 - `change_title`, `change_description`, `change_visibility`, `change_tags`.

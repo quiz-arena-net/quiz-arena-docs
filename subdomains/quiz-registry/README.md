@@ -50,6 +50,14 @@ References into other contexts:
 
 - [`UserId`](models/user-id.md): the owner or author, a `PlayerAccount` in Identity
 
+## Repository ports
+
+`QuizRepository` and `QuizListRepository` sit in the domain beside their aggregates: `find_by_id`,
+`find_by_owner(owner, order, page)`, `add`, `update`, `remove(id)`. They return aggregates and have
+no expected rejections. Identifiers are minted by the domain, and an aggregate that vanished between
+a read and a write is a conflict. `Page<50>` comes from the shared kernel. The order type is per
+aggregate (`QuizOrder`, `QuizListOrder`), today by creation or by last change.
+
 ## Modeling rules
 
 - **Always valid.** Every type enforces its invariants in its constructor or through the types of
