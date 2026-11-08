@@ -1,6 +1,7 @@
 # SharedSetListing
 
-Aggregate root: a set's presence in the community. Binds to a `QuestionSetVersion`.
+Aggregate root: a set's presence in the community. Binds to a `QuizListEntries` version in the Quiz
+Registry.
 
 ## Invariants
 

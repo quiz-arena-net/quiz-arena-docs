@@ -13,7 +13,7 @@ are the real test of whether a boundary is right.
 | Gameplay | Core | Game Session | [`game-session/`](game-session/) |
 | Answer judging | Core | Judging | [`judging/`](judging/) |
 | Content community | Core | Community & Discovery | [`community/`](community/) |
-| Quiz authoring | Supporting | Quiz Authoring | [`quiz-authoring/`](quiz-authoring/) |
+| Quiz content | Supporting | Quiz Registry | [`quiz-registry/`](quiz-registry/) |
 | Scoring | Supporting | Scoring | [`scoring/`](scoring/) |
 | Moderation | Supporting (deferred) | inside Community for now | - |
 | Identity & presence | Generic | Identity | [`identity/`](identity/) |
@@ -26,8 +26,8 @@ badges reward creators → creators make more sets).
 
 ```mermaid
 flowchart TD
-    QA[Quiz Authoring] -->|QuestionSetPublished| CM[Community & Discovery]
-    QA -->|set version snapshot| GS[Game Session]
+    QR[Quiz Registry] -->|QuizPublished| CM[Community & Discovery]
+    QR -->|quiz content versions by id| GS[Game Session]
     ID[Identity & Presence] -->|PlayerJoined| GS
     GS -->|AnswerTurnGranted| JG[Judging]
     JG -->|AnswerAttemptResolved| GS
@@ -39,8 +39,8 @@ flowchart TD
 
 ## Cross-context contracts (the arrows)
 
-- Authoring → Community: `QuestionSetPublished` (immutable version)
-- Authoring/Community → Game Session: set version snapshot at game start
+- Registry → Community: `QuizPublished` (immutable content version)
+- Registry → Game Session: a quiz list resolved to quiz content versions at game start
 - Identity → Game Session: `PlayerJoined`
 - Game Session → Judging: `AnswerTurnGranted`
 - Judging → Game Session, Scoring: `AnswerAttemptResolved`
@@ -50,12 +50,13 @@ flowchart TD
 
 ## Notes
 
-- **"Question" means three things**: an editable entity in Authoring, a read-only presented snapshot
-  in Game Session, an answer key + format config in Judging. Do not share one type across contexts.
-  The language split is evidence the boundaries are right.
-- **Immutable versions are the currency.** Publishing a set creates an immutable
-  `QuestionSetVersion`. Sessions snapshot it at start, and rankings bind to it. Editing mid-game or
-  post-ranking cannot mutate anything downstream.
+- **"Question" means three things**: a `Quiz` with its content versions in the Registry, a read-only
+  presented snapshot in Game Session, an answer key + format config in Judging. Do not share one
+  type across contexts. The language split is evidence the boundaries are right.
+- **Immutable versions are the currency.** Publishing a quiz creates an immutable `QuizContent`
+  version, and changing a list's quizzes creates an immutable `QuizListEntries` version. Sessions
+  bind to them at start, and rankings bind to them. Editing mid-game or post-ranking cannot mutate
+  anything downstream.
 - **Judging's integration surface is four messages**: `AnswerTurnGranted` (with deadline),
   `AnswerAttemptResolved`, `TurnRevoked`, and internally-guaranteed timeout resolution. Everything
   else is policy-internal.
@@ -66,9 +67,9 @@ flowchart TD
 1. **Ranking integrity**: likes and plays are both farmable (self-plays, bot lobbies). Qualification
    rules (distinct players, minimum lobby size, decay) are domain logic in `RankingPolicy`. v1 may
    be like-count based. Revisit before rankings confer visible status.
-2. **Set-version ranking semantics**: when a creator edits a ranked set, does reputation transfer to
-   the new version? Rankings bind to immutable `QuestionSetVersion`s, and the transfer rule is
-   undecided.
+2. **Version ranking semantics**: when a creator edits a ranked quiz or list, does reputation
+   transfer to the new version? Rankings bind to immutable content and entries versions, and the
+   transfer rule is undecided.
 3. **Moderation ripple**: `SetDelisted` effects on rankings and in-flight sessions.
 4. **LLM judge failure**: judge timeout must map to a defined `AttemptOutcome`, never a hung turn.
    Deadline is carried on the turn grant.
