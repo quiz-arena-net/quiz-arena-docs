@@ -46,9 +46,10 @@ Quiz list text:
 - [`QuizListTitle`](models/quiz-list-title.md)
 - [`QuizListDescription`](models/quiz-list-description.md)
 
-References into other contexts:
+From the shared kernel:
 
-- [`UserId`](models/user-id.md): the owner or author, a `PlayerAccount` in Identity
+- `UserId`: the owner of a quiz or list, or the author in a source. See the
+  [shared kernel](../README.md#shared-kernel) in the subdomain overview.
 
 ## Repository ports
 

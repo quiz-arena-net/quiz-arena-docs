@@ -48,6 +48,16 @@ flowchart TD
 - Scoring → Game Session (and clients): `LeaderboardUpdated`
 - Community → Identity: `BadgeAwarded`
 
+## Shared kernel
+
+Types every context uses with the same meaning, kept in the backend's `shared` crate and changed
+only by agreement between contexts:
+
+- `UserId`: identifies a user of the service. The user itself is a `PlayerAccount` in Identity,
+  which currently calls the identifier `PlayerId`. One name has to win.
+- `Page`: a window onto a listing, with the maximum page size fixed per listing.
+- `RepositoryError`: how a persistence port reports failure.
+
 ## Notes
 
 - **"Question" means three things**: a `Quiz` with its content versions in the Registry, a read-only
