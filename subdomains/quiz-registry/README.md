@@ -64,6 +64,10 @@ References into other contexts:
 - **Text is normalized on entry.** Every text value is NFC. Single-line values are trimmed and
   reject newlines. All values reject control characters, blank text and text over their limit.
 
+## Features
+
+Use cases of the write side are in [`features/`](features/README.md).
+
 ## Key events (candidates, none emitted yet)
 
 `QuizCreated`, `QuizPublished`, `QuizDeleted`, `QuizListCreated`, `QuizListEntriesChanged`,

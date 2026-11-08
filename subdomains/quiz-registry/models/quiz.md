@@ -26,8 +26,11 @@ and a state.
 - `publish`: converts the draft into the next content version and consumes the draft. Fails when
   there is no draft or the draft is not ready (every violation is reported at once).
 - `change_inclusion_policy`.
-- `editable_by(user)`, `includable_by(list_owner)`: the questions the application asks before
-  acting, see [`InclusionPolicy`](inclusion-policy.md).
+- `is_editable_by(user)`: the authorization question the application asks before acting.
+- `is_published()`, `is_includable_by(list_owner)`: whether a list owned by `list_owner` may include
+  the quiz. True only for a published quiz, and then for the owner always and for anyone else under
+  `InclusionPolicy::Anyone`, see [`InclusionPolicy`](inclusion-policy.md).
+  [`QuizList::add_quiz`](quiz-list.md) applies it. Sessions apply it again when resolving a list.
 
 ## Ownership
 
